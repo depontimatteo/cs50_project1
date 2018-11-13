@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Books</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='Styles/books.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='Styles/bootstrap.min.css') }}">
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <a class="navbar-brand" href="#">{% block heading %}{% endblock %}</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="/">Home</a>
+          </li>
+        </ul>
+      </div>
+      {% if "userid" in session %}
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+              <a class="nav-link" href="/search">Search Book</a>
+            </li>
+          </ul>
+        </div>
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="/logout">Logout <span class="sr-only">(current)</span></a></li>
+        </ul>
+      {% endif %}
+    </nav>
+
+    {% block body %}
+    {% endblock %}
+
+    <script src="{{ url_for('static', filename='Scripts/jquery-3.3.1.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='Scripts/bootstrap.min.js') }}"></script>
+  </body>
+</html>
