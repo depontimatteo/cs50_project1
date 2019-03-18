@@ -61,7 +61,7 @@ def search():
 @app.route("/search_result", methods=["GET","POST"])
 def search_result():
     search_p = request.form.get("search_p")
-    books = db.execute("select isbn, title, author, year from books where isbn like '%" + search_p + "%' or title like '%" + search_p + "%' or author like '%" + search_p + "%'").fetchall()
+    books = db.execute("select isbn, title, author, year from books where upper(isbn) like '%" + search_p.upper() + "%' or upper(title) like '%" + search_p.upper() + "%' or upper(author) like '%" + search_p.upper() + "%'").fetchall()
     return render_template("books.html", books=books)
 
 @app.route("/search_result/<string:book_isbn>", methods=["GET","POST"])
@@ -82,6 +82,7 @@ def send_review():
     review_p = request.form.get("review_p")
     rating_p = request.form.get("rating_p")
     book_isbn_p = request.form.get("book_isbn_p")
-    print('This is output '+review_p, file=sys.stdout)
+    print("insert into reviews (review_id, rating, review, userid, isbn) values (nextval('review_id_seq'), " + str(rating_p) + " " + str(review_p) + " " + str(session["userid"]) + " " + str(book_isbn_p), file=sys.stdout)
     db.execute("insert into reviews (review_id, rating, review, userid, isbn) values (nextval('review_id_seq'), :rating, :review, :userid, :isbn)", { "rating": rating_p, "review": review_p, "userid": session["userid"], "isbn": book_isbn_p })
+    db.commit();
     return search_single_book(book_isbn_p)
