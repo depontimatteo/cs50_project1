@@ -2,6 +2,7 @@ import os
 import hashlib
 import sys
 import requests
+import json
 
 from flask import Flask, session, render_template, request, flash
 from flask_session import Session
@@ -67,10 +68,10 @@ def search_result():
 @app.route("/search_result/<string:book_isbn>", methods=["GET","POST"])
 def search_single_book(book_isbn):
     books = db.execute("select isbn, title, author, year from books where isbn = :isbn ", { "isbn": book_isbn }).fetchall()
-    reviews_from_user = db.execute("select review_id, rating, review from reviews where userid = :userid and isbn = :isbn", { "userid": session["userid"], "isbn": book_isbn });
-    reviews_from_all = db.execute("select r.review_id, r.rating, r.review, u.username from reviews r left join users u on r.userid=u.userid and r.isbn = :isbn", { "isbn": book_isbn });
+    reviews_from_user = db.execute("select review_id, rating, review, userid from reviews where userid = :userid and isbn = :isbn", { "userid": session["userid"], "isbn": book_isbn }).fetchall()    
+    reviews_from_all = db.execute("select r.review_id, r.rating, r.review, u.username from reviews r left join users u on r.userid=u.userid where r.isbn = :isbn", { "isbn": book_isbn }).fetchall()
     reviews_from_goodreads = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key": "UYMkXV82q3xj7zy9rQaomg", "isbns": book_isbn})
-    return render_template("single_book.html", books=books, reviews_from_user=reviews_from_user, reviews_from_all=reviews_from_all, reviews_from_goodreads=reviews_from_goodreads)
+    return render_template("single_book.html", books=books, reviews_from_user=reviews_from_user, reviews_from_all=reviews_from_all, reviews_from_goodreads=reviews_from_goodreads, userid=session["userid"], number_of_reviews=len(reviews_from_all))
 
 @app.route("/books")
 def books():
@@ -82,7 +83,7 @@ def send_review():
     review_p = request.form.get("review_p")
     rating_p = request.form.get("rating_p")
     book_isbn_p = request.form.get("book_isbn_p")
-    print("insert into reviews (review_id, rating, review, userid, isbn) values (nextval('review_id_seq'), " + str(rating_p) + " " + str(review_p) + " " + str(session["userid"]) + " " + str(book_isbn_p), file=sys.stdout)
     db.execute("insert into reviews (review_id, rating, review, userid, isbn) values (nextval('review_id_seq'), :rating, :review, :userid, :isbn)", { "rating": rating_p, "review": review_p, "userid": session["userid"], "isbn": book_isbn_p })
     db.commit();
     return search_single_book(book_isbn_p)
+
