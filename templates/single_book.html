@@ -6,25 +6,44 @@
 
 {% block body %}
     <div class="container">
-      {% for book in books %}
       <div class="row">
-          <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6 col-xs-12 p-5">
-            <h3>{{ book.title }}</h3>
+        <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6 col-xs-12 p-5">
+          <h3>{{ book["title"] }}</h3>
+        </div>
+      </div>
+        {% if reviews_from_goodreads["isbn"] == isbn %}
+
+        <div class="row">
+          <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6 col-xs-12 p-3">
+            <h4>Goodreads Rating</h4>
           </div>
         </div>
+
+        <div class="row">
+          <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6 col-xs-12">
+            Ratings Count: {{ reviews_from_goodreads["ratings_count"] }}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6 col-xs-12">
+            Average Rating: {{ reviews_from_goodreads["average_rating"] }}
+          </div>
+        </div>
+      {% endif %}
+
       <div class="row">
         <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6 col-xs-12">
-          ISBN: {{ book.isbn }}
+          ISBN: {{ book["isbn"] }}
         </div>
       </div>
       <div class="row">
         <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6 col-xs-12">
-          Author: {{ book.author }}
+          Author: {{ book["author"] }}
         </div>
       </div>
       <div class="row">
         <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6 col-xs-12">
-          Year: {{ book.year }}
+          Year: {{ book["year"] }}
         </div>
       </div>
         {% if number_of_reviews > 0 %}
@@ -53,36 +72,17 @@
           {% endfor %}
         {% endif %}
 
-        {% for review_gr in reviews_from_goodreads %}
-        <div class="row">
-          <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6 col-xs-12">
-            Username: {{ review_gr.rating_count }}
+        {% if already_reviewed %}
+          <div class="row">
+            <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6 col-xs-12 p-3">
+                <strong>Sorry, you've already reviewed this book.</strong>
+            </div>
           </div>
-        </div>
-        <div class="row">
-          <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6 col-xs-12">
-            Rating: {{ review_gr.average_rating }}
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6 col-xs-12">
-            Review: {{ review_gr.review }}
-          </div>
-        </div>
-        {% endfor %}
-
-        {% for review_fu in reviews_from_user %}
-          {% if userid == review_fu.userid %}
-        <div class="row">
-          <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6 col-xs-12 p-3">
-              <strong>Sorry, you've already reviewed this book.</strong>
-          </div>
-        </div>
-          {% else %}
+        {% else %}
           <form action="/send_review" method="POST">
             <div class="row">
-              <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6 col-xs-12">
-                Rate this book!
+              <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6 col-xs-12 p-3">
+                <h4>Rate this book!</h4>
               </div>
             </div>
             <div class="row">
@@ -125,8 +125,6 @@
             </div>
             <input type="hidden" name="book_isbn_p" value="{{ book.isbn }}" />
           </form>
-          {% endif %}
-        {% endfor %}
-      {% endfor %}
+        {% endif %}
     </div>
 {% endblock %}
