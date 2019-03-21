@@ -6,6 +6,19 @@
 
 {% block body %}
     <div class="container">
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div class="row">
+          <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6 col-xs-12">
+              <ul class=flashes>
+                {% for message in messages %}
+                  <li>{{ message }}</li>
+                {% endfor %}
+              </ul>
+          </div>
+        </div>
+        {% endif %}
+      {% endwith %}
       <div class="row">
         <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6 col-xs-12">
           <h3>Welcome</h3>

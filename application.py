@@ -91,12 +91,31 @@ def login():
                 flash("Wrong password!")
             else:
                 session["userid"]=user.userid
+
         return index()
 
 @app.route('/logout')
 def logout():
     session.pop('userid', None)
     return index()
+
+@app.route("/registration")
+def registration():
+    return render_template("registration.html")
+
+@app.route("/save_registration", methods=["GET","POST"])
+def save_registration():
+    if request.method == "GET":
+        return "Operation not allowed"
+    else:
+        username_reg_p = request.form.get("username_reg_p")
+        password_reg_p = request.form.get("password_reg_p")
+
+        hashpass_reg_p = hashlib.md5(password_reg_p.encode('utf8')).hexdigest()
+
+        users=db.execute("insert into users (userid, username, password) values (nextval('userid_seq'), :username, :password)",{ "username": username_reg_p, "password": hashpass_reg_p })
+        flash('Registration complete')
+        return index()
 
 @app.route("/search")
 def search():
