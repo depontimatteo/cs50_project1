@@ -1,2 +1,7 @@
 Flask
-Flask-SocketIO
+Flask-Session
+psycopg2
+SQLAlchemy
+xmltodict
+
+requests module
