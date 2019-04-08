@@ -1,0 +1,130 @@
+{% extends "layout.html" %}
+
+{% block heading %}
+  Depo's Web Library
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6 col-xs-12 p-5">
+          <h3>{{ book["title"] }}</h3>
+        </div>
+      </div>
+        {% if reviews_from_goodreads["isbn"] == isbn %}
+
+        <div class="row">
+          <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6 col-xs-12 p-3">
+            <h4>Goodreads Rating</h4>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6 col-xs-12">
+            Ratings Count: {{ reviews_from_goodreads["ratings_count"] }}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6 col-xs-12">
+            Average Rating: {{ reviews_from_goodreads["average_rating"] }}
+          </div>
+        </div>
+      {% endif %}
+
+      <div class="row">
+        <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6 col-xs-12">
+          ISBN: {{ book["isbn"] }}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6 col-xs-12">
+          Author: {{ book["author"] }}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6 col-xs-12">
+          Year: {{ book["year"] }}
+        </div>
+      </div>
+        {% if number_of_reviews > 0 %}
+          <div class="row">
+            <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6 col-xs-12 p-3">
+              <h4>Reviews from users</h4>
+            </div>
+          </div>
+
+          {% for review_fa in reviews_from_all %}
+          <div class="row">
+            <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6 col-xs-12 p-3">
+              <strong>Username: {{ review_fa.username }}</strong>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6 col-xs-12">
+              Rating: {{ review_fa.rating }}
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6 col-xs-12">
+              Review: {{ review_fa.review }}
+            </div>
+          </div>
+          {% endfor %}
+        {% endif %}
+
+        {% if already_reviewed %}
+          <div class="row">
+            <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6 col-xs-12 p-3">
+                <strong>Sorry, you've already reviewed this book.</strong>
+            </div>
+          </div>
+        {% else %}
+          <form action="/send_review" method="POST">
+            <div class="row">
+              <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6 col-xs-12 p-3">
+                <h4>Rate this book!</h4>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6 col-xs-12">
+                <div class="form-check-inline">
+                  <label class="form-check-label">
+                    <input type="radio" class="form-check-input" name="rating_p" value="1">1
+                  </label>
+                </div>
+                <div class="form-check-inline">
+                  <label class="form-check-label">
+                    <input type="radio" class="form-check-input" name="rating_p" value="2">2
+                  </label>
+                </div>
+                <div class="form-check-inline">
+                  <label class="form-check-label">
+                    <input type="radio" class="form-check-input" name="rating_p" value="3">3
+                  </label>
+                </div>
+                <div class="form-check-inline">
+                  <label class="form-check-label">
+                    <input type="radio" class="form-check-input" name="rating_p" value="4">4
+                  </label>
+                </div>
+                <div class="form-check-inline">
+                  <label class="form-check-label">
+                    <input type="radio" class="form-check-input" name="rating_p" value="5">5
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6 col-xs-12">
+                <div class="form-group">
+                  <label for="comment">Please write a little review about this book:</label>
+                  <textarea class="form-control" rows="5" name="review_p"></textarea>
+                  <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Send</button>
+                </div>
+              </div>
+            </div>
+            <input type="hidden" name="book_isbn_p" value="{{ book.isbn }}" />
+          </form>
+        {% endif %}
+    </div>
+{% endblock %}
