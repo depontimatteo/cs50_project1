@@ -1,7 +1,0 @@
-Host ec2-54-217-235-166.eu-west-1.compute.amazonaws.com
-Database deebic297pvtau
-User daxokfxwxqkvfp
-Port 5432
-Password 11f630a0a79a5f00aa096a65a37214814b0b3d0fd51f2f8c374be8015d2c2ecc
-URI postgres://daxokfxwxqkvfp:11f630a0a79a5f00aa096a65a37214814b0b3d0fd51f2f8c374be8015d2c2ecc@ec2-54-217-235-166.eu-west-1.compute.amazonaws.com:5432/deebic297pvtau
-Heroku CLI heroku pg:psql postgresql-tetrahedral-48436 --app teomaculadecs50
